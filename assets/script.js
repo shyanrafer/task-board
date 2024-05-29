@@ -3,9 +3,15 @@ let taskList = JSON.parse(localStorage.getItem("tasks"));
 let nextId = JSON.parse(localStorage.getItem("nextId"));
 
 // Todo: create a function to generate a unique task id
-function generateTaskId(id) {
-    for (let i = 0; i < 100_000; i++)
-    return id++
+function generateTaskId() {
+    if (nextId === null) {
+      nextId = 1
+    } else {nextId++}
+    localStorage.setItem('nextId', JSON.stringify(nextId))
+    // key value pair
+    
+      
+    return nextId
   // could start here
   // save id to local storage 
   // setItem in local storage
@@ -32,17 +38,20 @@ function handleAddTask(event){
   
   const addTaskButton = $('#addTaskButton')
   addTaskButton.onClick()
-  const task = {
+  const newTask = {
+    // will need add id function and set it as a property (check)
+    // objects have key value pairs
     id: generateTaskId(),
-    task: '',
-
-// the values must be recieved here and then stored to local storage as key value pairs
+    task: $('#task-name').val(),
+    dueDate: $('#due-date'),
+    details: $('#task-details').val(),
+    status: ''
   }
+  // the values must be recieved here and then stored to local storage as key value pairs
+
   
-  // objects have key value pairs
 }
 
-  // will need add id function and set it as a property
 
 
 
