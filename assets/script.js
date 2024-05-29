@@ -36,19 +36,26 @@ function renderTaskList() {
 function handleAddTask(event){
   event.preventDefault()
   
-  const addTaskButton = $('#addTaskButton')
-  addTaskButton.onClick()
+  $('document').ready(function(){
+    $('#addTaskButton').click(function(){
+      $('#modal-form').fadeIn('slow')
+    })
+    $('.close-modal').click(function(){
+      $('#modal-form').fadeOut('slow')
+    })
+  }) 
+
   const newTask = {
     // will need add id function and set it as a property (check)
     // objects have key value pairs
     id: generateTaskId(),
-    task: $('#task-name').val(),
+    taskName: $('#task-name').val(),
     dueDate: $('#due-date'),
-    details: $('#task-details').val(),
-    status: ''
+    taskDetails: $('#task-details').val(),
+    taskStatus: ''
   }
   // the values must be recieved here and then stored to local storage as key value pairs
-
+ localStorage.setItem('tasks', JSON.stringify(newTask))
   
 }
 
