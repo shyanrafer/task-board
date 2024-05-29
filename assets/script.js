@@ -36,14 +36,7 @@ function renderTaskList() {
 function handleAddTask(event){
   event.preventDefault()
   
-  $('document').ready(function(){
-    $('#addTaskButton').click(function(){
-      $('#modal-form').fadeIn('slow')
-    })
-    $('.close-modal').click(function(){
-      $('#modal-form').fadeOut('slow')
-    })
-  }) 
+  
 
   const newTask = {
     // will need add id function and set it as a property (check)

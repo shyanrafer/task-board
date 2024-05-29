@@ -13,6 +13,9 @@
 
   <link rel="stylesheet" href="./assets/style.css" />
   <title>Task Board</title>
+  <style>
+    
+  </style>
 </head>
 
 <body>
@@ -23,20 +26,20 @@
   <div class="container">
     <div class="text-center mb-5">
       <button id="addTaskButton" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#formModal">Add Task</button>
+      <div style="display: none;" id="modal-form">
+        <form class="task-fill-out-form">
+          <label for="task-name">Task Name</label>
+          <input type="text" id="task-name" placeholder="Enter task here">
+          <label for="due-date">Due date</label>
+          <input type="date" id="due-date" placeholder="Due date">
+          <label for="task-details">Task details</label>
+          <input type="text" id="task-details" placeholder="Describe your task">
+          <div class="form-display-message"></div>
+          <button class="close-modal">X</button>
+        </form>
+      </div>
     </div>
     <!-- Todo: Create a modal with a form to add tasks -->
-    <div id="modal-form">
-      <form class="task-fill-out-form">
-        <label for="task-name">Task Name</label>
-        <input type="text" id="task-name" placeholder="Enter task here">
-        <label for="due-date">Due date</label>
-        <input type="date" id="due-date" placeholder="Due date">
-        <label for="task-details">Task details</label>
-        <input type="text" id="task-details" placeholder="Describe your task">
-        <div class="form-display-message"></div>
-        <button class="close-modal">X</button>
-      </form>
-    </div>
     <!-- I either need to keep the above html or come up with a way to make the card when one clicks javascript - or for this text to popup then -->
     <div class="row swim-lanes text-center justify-content-between">
       <div class="col-12 col-lg-4 d-flex">
@@ -71,6 +74,17 @@
       </div>
     </div>
   </div>
+  
+  <script>
+    $('document').ready(function(){
+      $('#addTaskButton').click(function(){
+        $('#modal-form').fadeIn('slow')
+      })
+      $('.close-modal').click(function(){
+        $('#modal-form').fadeOut('slow')
+      })
+    }) 
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
