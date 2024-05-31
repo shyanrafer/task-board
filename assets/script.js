@@ -59,10 +59,14 @@ function createTaskCard(task) {
   // append elements to the card and the append the card to document 
 }
 
+
+
 // Todo: create a function to render the task list and make cards draggable
 function renderTaskList() {
-
+  
 }
+
+
 
 // Todo: create a function to handle adding a new task
 function handleAddTask(event){
@@ -108,6 +112,8 @@ console.log(projects)
   printProjectData();
 }
 
+
+
 // Todo: create a function to handle dropping a task into a new status lane
 function handleDrop(event, ui) {
   const projects = readProjectsFromStorage();
@@ -129,6 +135,8 @@ function handleDrop(event, ui) {
   printProjectData();
 // I think with this one i will need to essentially recreate the card each time it is dropped into the new column - something like that
 }
+
+
 
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
