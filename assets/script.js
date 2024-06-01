@@ -1,9 +1,11 @@
 // Retrieve tasks and nextId from localStorage
 let taskList = JSON.parse(localStorage.getItem("tasks")) || [];
 let nextId = JSON.parse(localStorage.getItem("nextId"));
+// we added a variable to rep a task button in global scope and added the .click method to it with the handleAddTask() as the method's parameter
 const addTaskBtn = $('#formSubmit').click(handleAddTask)
 
 // Todo: create a function to generate a unique task id
+// this function is to set an incremental task id
 function generateTaskId() {
     if (nextId === null) {
       nextId = 1
@@ -21,6 +23,7 @@ function generateTaskId() {
 }
 
 // Todo: create a function to create a task card
+// for this snippet i just had to replace instances where 'project' was listed to the 'task' equivalent for this gven assignment
 function createTaskCard(task) {
   // adding code from week 5 mini project as it is so similar to this project
   const taskCard = $('<div>')
@@ -56,7 +59,6 @@ function createTaskCard(task) {
   // ? Return the card so it can be appended to the correct lane.
   return taskCard;
   // call the info from local storage generated from the addTask function in order to have the values for creating the taskCard
-  // will need a for loo[ to run through the data provided from local storage
   // append elements to the card and the append the card to document 
 }
 
@@ -69,18 +71,28 @@ function renderTaskList() {
   if (!taskList) {
     taskList = []
   }
+  // in general when doing dom manipulation it is recommended to assign variables in the given function
   const toDoCards = $('#todo-cards') 
   toDoCards.empty()
   const inProgressCards = $('#in-progress-cards')
   const doneCards = $('#done-cards')
-
+  
+  // will need a for loop to run through the data provided from local storage
   for (i = 0; i < taskList.length; i++) {
     toDoCards.append(createTaskCard(taskList[i]))
 
-    if (taskStatus)
-      // refer to past assignment for this
+    for (let task of taskList) {
+      if (task.status === 'to-do') {
+        todoCards.append(createTaskCard(taskList));
+      } else if (task.status === 'in-progress') {
+        inProgressCards.append(createProjectCard(taskList));
+      } else if (task.status === 'done') {
+        doneCards.append(createTaskCard(taskList));
+      }
+    }
   }
 
+  // this snippet was provided by the tutor and copied
   $('.draggable').draggable({
     opacity: 0.7,
     zIndex: 100,
@@ -95,7 +107,6 @@ function renderTaskList() {
       });
     },
   });
-// in general when doing dom manipulation it is recommended to assign variables in the given function
 }
 
 
@@ -103,8 +114,6 @@ function renderTaskList() {
 // Todo: create a function to handle adding a new task
 function handleAddTask(event){
   event.preventDefault()
-  console.log('hello')
-  
 
   const newTask = {
     // will need add id function and set it as a property (check)
@@ -115,15 +124,14 @@ function handleAddTask(event){
     taskDetails: $('#task-details').val(),
     taskStatus: ''
   }
+  // pushes the key value pairs from the newTask object into the taskLisk empty array
   taskList.push(newTask)
-  // the values must be recieved here and then stored to local storage as key value pairs
+  // then we save the data in the local storage as a string (JSON.stringify()) for the sake of the browser being able to manipulate the data
   localStorage.setItem('tasks', JSON.stringify(taskList))
  
  $('#task-name').val('');
  $('#due-date').val('');
  $('#task-details').val('');
-
-  
 }
 
 
@@ -131,8 +139,9 @@ function handleAddTask(event){
 
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event){
-  const taskId = $(this).attr('data-project-id');
-  const tasks = readProjectsFromStorage();
+  const taskId = $(this).attr('data-task-id');
+  const tasks = taskList;
+  // 
 
 
   // ? Remove project from the array. There is a method called `filter()` for this that is better suited which we will go over in a later activity. For now, we will use a `forEach()` loop to remove the project.
@@ -143,11 +152,10 @@ function handleDeleteTask(event){
     }
   });
 console.log(tasks)
-  // ? We will use our helper function to save the projects to localStorage
-  saveProjectsToStorage(tasks);
+  
 
   // ? Here we use our other function to print projects back to the screen
-  printProjectData();
+  renderTaskList();
 }
 
 
@@ -158,7 +166,7 @@ function handleDrop(event, ui) {
   // ? Get the project id from the event
   const taskId = ui.draggable[0].dataset.taskId;
  console.log(typeof taskId)
-//  typeof is special in JS - tells type of variable
+  //  typeof is special in JS - tells type of variable
   // ? Get the id of the lane that the card was dropped into
   const newStatus = event.target.id;
 
