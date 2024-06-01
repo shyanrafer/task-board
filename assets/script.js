@@ -1,6 +1,7 @@
 // Retrieve tasks and nextId from localStorage
-let taskList = JSON.parse(localStorage.getItem("tasks"));
+let taskList = JSON.parse(localStorage.getItem("tasks")) || [];
 let nextId = JSON.parse(localStorage.getItem("nextId"));
+const addTaskBtn = $('#formSubmit').click(handleAddTask)
 
 // Todo: create a function to generate a unique task id
 function generateTaskId() {
@@ -23,21 +24,21 @@ function generateTaskId() {
 function createTaskCard(task) {
   // adding code from week 5 mini project as it is so similar to this project
   const taskCard = $('<div>')
-    .addClass('card project-card draggable my-3')
-    .attr('data-project-id', project.id);
-  const cardHeader = $('<div>').addClass('card-header h4').text(project.name);
+    .addClass('card task-card draggable my-3')
+    .attr('data-task-id', task.id);
+  const cardHeader = $('<div>').addClass('card-header h4').text(task.taskName);
   const cardBody = $('<div>').addClass('card-body');
-  const cardDescription = $('<p>').addClass('card-text').text(project.type);
-  const cardDueDate = $('<p>').addClass('card-text').text(project.dueDate);
+  const cardDescription = $('<p>').addClass('card-text').text(task.taskDetails);
+  const cardDueDate = $('<p>').addClass('card-text').text(task.dueDate);
   const cardDeleteBtn = $('<button>')
     .addClass('btn btn-danger delete')
     .text('Delete')
-    .attr('data-project-id', project.id);
-
+    .attr('data-task-id', task.id);
+  cardDeleteBtn.click(handleDeleteTask)
   // ? Sets the card background color based on due date. Only apply the styles if the dueDate exists and the status is not done.
-  if (project.dueDate && project.status !== 'done') {
+  if (task.dueDate && task.taskStatus !== 'done') {
     const now = dayjs();
-    const taskDueDate = dayjs(project.dueDate, 'DD/MM/YYYY');
+    const taskDueDate = dayjs(task.dueDate, 'DD/MM/YYYY');
 
     // ? If the task is due today, make the card yellow. If it is overdue, make it red.
     if (now.isSame(taskDueDate, 'day')) {
@@ -63,7 +64,38 @@ function createTaskCard(task) {
 
 // Todo: create a function to render the task list and make cards draggable
 function renderTaskList() {
+  // is this to make the cards visible on the page? also, how to implement a draggable function?
   
+  if (!taskList) {
+    taskList = []
+  }
+  const toDoCards = $('#todo-cards') 
+  toDoCards.empty()
+  const inProgressCards = $('#in-progress-cards')
+  const doneCards = $('#done-cards')
+
+  for (i = 0; i < taskList.length; i++) {
+    toDoCards.append(createTaskCard(taskList[i]))
+
+    if (taskStatus)
+      // refer to past assignment for this
+  }
+
+  $('.draggable').draggable({
+    opacity: 0.7,
+    zIndex: 100,
+    // function to clone the card being dragged so that the original card remains in place
+    helper: function (e) {
+      // check of the target of the drag event is the card itself or a child element if it is the card itself, clone it, otherwise find the parent card and clone that
+      const original = $(e.target).hasClass('ui-draggable')
+        ? $(e.target)
+        : $(e.target).closest('.ui-draggable');
+      return original.clone().css({
+        maxWidth: original.outerWidth(),
+      });
+    },
+  });
+// in general when doing dom manipulation it is recommended to assign variables in the given function
 }
 
 
@@ -71,7 +103,7 @@ function renderTaskList() {
 // Todo: create a function to handle adding a new task
 function handleAddTask(event){
   event.preventDefault()
-  
+  console.log('hello')
   
 
   const newTask = {
@@ -79,12 +111,18 @@ function handleAddTask(event){
     // objects have key value pairs
     id: generateTaskId(),
     taskName: $('#task-name').val(),
-    dueDate: $('#due-date'),
+    dueDate: $('#due-date').val(),
     taskDetails: $('#task-details').val(),
     taskStatus: ''
   }
+  taskList.push(newTask)
   // the values must be recieved here and then stored to local storage as key value pairs
- localStorage.setItem('tasks', JSON.stringify(newTask))
+  localStorage.setItem('tasks', JSON.stringify(taskList))
+ 
+ $('#task-name').val('');
+ $('#due-date').val('');
+ $('#task-details').val('');
+
   
 }
 
@@ -93,20 +131,20 @@ function handleAddTask(event){
 
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event){
-  const projectId = $(this).attr('data-project-id');
-  const projects = readProjectsFromStorage();
+  const taskId = $(this).attr('data-project-id');
+  const tasks = readProjectsFromStorage();
 
 
   // ? Remove project from the array. There is a method called `filter()` for this that is better suited which we will go over in a later activity. For now, we will use a `forEach()` loop to remove the project.
-  projects.forEach((project) => {
+  tasks.forEach((task) => {
 
-    if (project.id === projectId) {
-      projects.splice(projects.indexOf(project), 1);
+    if (tasks.id === taskId) {
+      tasks.splice(tasks.indexOf(task), 1);
     }
   });
-console.log(projects)
+console.log(tasks)
   // ? We will use our helper function to save the projects to localStorage
-  saveProjectsToStorage(projects);
+  saveProjectsToStorage(tasks);
 
   // ? Here we use our other function to print projects back to the screen
   printProjectData();
@@ -116,23 +154,23 @@ console.log(projects)
 
 // Todo: create a function to handle dropping a task into a new status lane
 function handleDrop(event, ui) {
-  const projects = readProjectsFromStorage();
 
   // ? Get the project id from the event
-  const taskId = ui.draggable[0].dataset.projectId;
-
+  const taskId = ui.draggable[0].dataset.taskId;
+ console.log(typeof taskId)
+//  typeof is special in JS - tells type of variable
   // ? Get the id of the lane that the card was dropped into
   const newStatus = event.target.id;
 
-  for (let project of projects) {
+  for (let task of taskList) {
     // ? Find the project card by the `id` and update the project status.
-    if (project.id === taskId) {
-      project.status = newStatus;
+    if (task.id === parseInt(taskId)) {
+      task.taskStatus = newStatus;
     }
   }
   // ? Save the updated projects array to localStorage (overwritting the previous one) and render the new project data to the screen.
-  localStorage.setItem('projects', JSON.stringify(projects));
-  printProjectData();
+  localStorage.setItem('tasks', JSON.stringify(taskList));
+  renderTaskList();
 // I think with this one i will need to essentially recreate the card each time it is dropped into the new column - something like that
 }
 
@@ -141,5 +179,10 @@ function handleDrop(event, ui) {
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
   // run renderTaskList so that I can see all my tasks
+  renderTaskList()
   // submit
+  $('.lane').droppable({
+    accept: '.draggable',
+    drop: handleDrop,
+  });
 });
