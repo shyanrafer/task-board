@@ -34,12 +34,13 @@ function createTaskCard(task) {
   // Sets the card background color based on due date. Only apply the styles if the dueDate exists and the status is not done.
   if (task.dueDate && task.taskStatus !== 'done') {
     const now = dayjs();
-    const taskDueDate = dayjs(task.dueDate, 'DD/MM/YYYY');
+    const taskDueDate = dayjs(task.dueDate, 'MM/DD/YYYY');
 
     // If the task is due today, make the card yellow. If it is overdue, make it red.
     if (now.isSame(taskDueDate, 'day')) {
       taskCard.addClass('bg-warning text-white');
     } else if (now.isAfter(taskDueDate)) {
+      // cards are not turning red
       taskCard.addClass('bg-danger text-white');
       cardDeleteBtn.addClass('border-light');
     }
