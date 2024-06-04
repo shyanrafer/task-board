@@ -32,15 +32,19 @@ function createTaskCard(task) {
   cardDeleteBtn.click(handleDeleteTask); //sets delete function on a click event
 
   // Sets the card background color based on due date. Only apply the styles if the dueDate exists and the status is not done.
+  // snippet copied from week 5 mini project and edited to befit this project
   if (task.dueDate && task.taskStatus !== 'done') {
-    const now = dayjs();
-    const taskDueDate = dayjs(task.dueDate, 'MM/DD/YYYY');
+    const now = dayjs(); //now is set to today
+    const taskDueDate = dayjs(task.dueDate, 'mm/dd/yyyy');
 
     // If the task is due today, make the card yellow. If it is overdue, make it red.
     if (now.isSame(taskDueDate, 'day')) {
       taskCard.addClass('bg-warning text-white');
-    } else if (now.isAfter(taskDueDate)) {
-      // cards are not turning red
+    } else if (now.isAfter(taskDueDate, 'day')) {
+      console.log('hi')
+
+      // unable to loop through second condition
+      // there's a bug even on the code provided from the mini project
       taskCard.addClass('bg-danger text-white');
       cardDeleteBtn.addClass('border-light');
     }
